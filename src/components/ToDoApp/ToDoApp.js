@@ -1,10 +1,19 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import ToDo from './ToDo'
 import ToDoForm from './ToDoForm'
 import ToDoList from './ToDoList'
 export default function ToDoApp() {
 
-  const [toDoList, setToDoList] = useState([]);
+  const getLocalToDo = () =>{
+    let listToDo = localStorage.getItem('todos');
+    if(listToDo){
+        return JSON.parse(localStorage.getItem('todos'));
+    }else{
+      return [];
+    }
+  }
+
+  const [toDoList, setToDoList] = useState(getLocalToDo());
 
 
 
@@ -12,7 +21,7 @@ export default function ToDoApp() {
     if(!todo.text || /^\s*$/.test(todo.text)){
       return;
     }
-      const newToDos = [todo, ...toDoList]
+      const newToDos = [todo, ...toDoList] 
       setToDoList(newToDos);
       console.log(...toDoList)
   }
@@ -28,7 +37,10 @@ export default function ToDoApp() {
 
   }
 
-
+  useEffect(()=>{
+        localStorage.setItem('todos', JSON.stringify(toDoList))
+        },[toDoList]);
+ console.log(toDoList)
   return (
     <div className="toDoApp">
         <ToDo />
